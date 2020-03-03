@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 30
-  velocity: 30
+  velocity: 5
   rb: {fileID: 867710357546116902}
   impactParticles: {fileID: 6316494378843729061, guid: 0692a2da7750b134fa3dc3675dd976de,
     type: 3}

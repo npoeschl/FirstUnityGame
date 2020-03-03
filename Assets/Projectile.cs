@@ -12,21 +12,22 @@ public class Projectile : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        //make projectile move
+        Vector3 projectileForce = GameObject.FindWithTag("Player").transform.forward * velocity;
+
+        rb.AddForce(projectileForce, ForceMode.Impulse);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        //make projectile move
-        Vector3 projectileForce = new Vector3(0,0, velocity) ;
-        rb.AddForce(projectileForce);
+      
     }
 
     void OnCollisionEnter(Collision collision)
     {
         Debug.Log(collision.collider);
-        Instantiate(impactParticles, collision.contacts[0].point, Quaternion.identity);
+        Instantiate(impactParticles, collision.contacts[0].point, Quaternion.LookRotation(collision.contacts[0].normal, Vector3.up));
         Destroy(gameObject);
     }
 }
