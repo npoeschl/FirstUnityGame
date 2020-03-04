@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     public GameObject ProjectilePrefab;
     public GameObject ShootingPoint;
+    public GameObject Healthbar;
     public Animator anim;
     [SerializeField] private CharacterController characterController;
     [SerializeField] private float moveSpeed;
@@ -16,12 +17,47 @@ public class Player : MonoBehaviour
     bool canShoot = true;
     public float fireRate = 2f;
     public float nextFire;
+    public float maxhealth = 100f;
+    float currentHealth;
+    
     
 
     // Start is called before the first frame update
     void Start()
     {
         anim.SetBool("Run Forward", false);
+        currentHealth = maxhealth;
+    }
+
+    void TakeDamage(float dmg)
+    {
+        if (currentHealth > 0)
+        {
+            currentHealth -= dmg;
+            Healthbar.transform.localScale = new Vector3(currentHealth / maxhealth,1,1);
+            Healthbar.transform.localPosition += new Vector3(-(dmg / maxhealth)/2, 0,0);
+            if (currentHealth < 70)
+            {
+                Healthbar.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.yellow);
+            }
+            if (currentHealth < 50)
+            {
+                Healthbar.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.magenta);
+            }
+            if (currentHealth < 30)
+            {
+                Healthbar.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.red);
+            }
+        }
+        else
+        {
+            Die();
+        }
+    }
+
+    void Die()
+    {
+        anim.SetTrigger("Die");
     }
 
     void Shoot()
@@ -29,6 +65,7 @@ public class Player : MonoBehaviour
         anim.SetTrigger("Attack 01");
         Instantiate(ProjectilePrefab, ShootingPoint.transform.position, Quaternion.identity);
         nextFire = Time.time + 1 / fireRate;
+        TakeDamage(10);
     }
 
     void Jump()
@@ -59,7 +96,7 @@ public class Player : MonoBehaviour
     {
         // Store input values
         Vector3 movement = new Vector3(Input.GetAxis("Vertical"), 0.0f, -Input.GetAxis("Horizontal"));
-        Debug.Log(movement);
+        
         
         // Try to jump
         if (Input.GetButtonDown("Jump")) 
@@ -68,7 +105,7 @@ public class Player : MonoBehaviour
         }
 
         // Try to shoot
-        if (Input.GetAxis("RightTrigger") > 0 && Time.time >= nextFire)
+        if ((Input.GetAxis("RightTrigger") > 0 || Input.GetButtonDown("Fire1")) && Time.time >= nextFire)
         {
             Shoot();
         }
