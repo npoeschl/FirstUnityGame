@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
@@ -14,13 +13,12 @@ public class Player : MonoBehaviour
     private float gravity = 15f;
     private float vSpeed = 0f;
     bool canJump = true;
-    bool canShoot = true;
     public float fireRate = 2f;
-    public float nextFire;
+    float nextFire;
     public float maxhealth = 100f;
     float currentHealth;
-    
-    
+    Vector2 movementInput;
+
 
     // Start is called before the first frame update
     void Start()
@@ -29,13 +27,54 @@ public class Player : MonoBehaviour
         currentHealth = maxhealth;
     }
 
+    void OnMove(InputValue value)
+    {
+        movementInput = value.Get<Vector2>();
+    }
+
+    void OnShoot()
+    {
+        Shoot();
+    }
+
+    void OnJump()
+    {
+        Jump();
+    }
+
+    void Move()
+    {
+        // Store input values
+        Vector3 movement = new Vector3(movementInput.x, 0.0f, movementInput.y);
+
+        // Calculate downward speed with gravity
+        vSpeed -= gravity * Time.deltaTime;
+        movement.y = vSpeed;
+
+        // Make Charactercontroller move the player
+        // TODO: Make Jumpspeed independent from moveSpeed 
+        characterController.Move(movement * Time.deltaTime * moveSpeed);
+
+        // Rotate character only if input is given and set walking animation
+        if (movement.x != 0 || movement.z != 0)
+        {
+            transform.rotation = Quaternion.LookRotation(new Vector3(movementInput.x, 0.0f, -movementInput.y));
+            anim.SetBool("Run Forward", true);
+        }
+        // No Movement Input -> Idle
+        else
+        {
+            anim.SetBool("Run Forward", false);
+        }
+    }
+
     void TakeDamage(float dmg)
     {
         if (currentHealth > 0)
         {
             currentHealth -= dmg;
-            Healthbar.transform.localScale = new Vector3(currentHealth / maxhealth,1,1);
-            Healthbar.transform.localPosition += new Vector3(-(dmg / maxhealth)/2, 0,0);
+            Healthbar.transform.localScale = new Vector3(currentHealth / maxhealth, 1, 1);
+            Healthbar.transform.localPosition += new Vector3(-(dmg / maxhealth) / 2, 0, 0);
             if (currentHealth < 70)
             {
                 Healthbar.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.yellow);
@@ -70,6 +109,8 @@ public class Player : MonoBehaviour
 
     void Jump()
     {
+        Debug.Log("Jump triggered");
+
         // Set canJump true if player is grounded
         if (characterController.isGrounded)
         {
@@ -79,7 +120,7 @@ public class Player : MonoBehaviour
             anim.SetTrigger("Jump");
         }
         // Player is airborn
-        else 
+        else
         {
             if (canJump)
             {
@@ -88,49 +129,12 @@ public class Player : MonoBehaviour
                 canJump = false;
             }
         }
-              
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Store input values
-        Vector3 movement = new Vector3(Input.GetAxis("Vertical"), 0.0f, -Input.GetAxis("Horizontal"));
-        
-        
-        // Try to jump
-        if (Input.GetButtonDown("Jump")) 
-        {
-            Jump();
-        }
-
-        // Try to shoot
-        if ((Input.GetAxis("RightTrigger") > 0 || Input.GetButtonDown("Fire1")) && Time.time >= nextFire)
-        {
-            Shoot();
-        }
-
-        // Calculate downward speed with gravity
-        vSpeed -= gravity * Time.deltaTime;
-        movement.y = vSpeed;
-        
-        // Make Charactercontroller move the player
-        // TODO: Make Jumpspeed independent from moveSpeed 
-        characterController.Move(movement * Time.deltaTime * moveSpeed);
-        
-        // Rotate character only if input is given and set walking animation
-        if (movement.x != 0 || movement.z != 0)
-        {
-            transform.rotation = Quaternion.LookRotation(new Vector3(Input.GetAxis("Vertical"), 0.0f, -Input.GetAxis("Horizontal")));
-            anim.SetBool("Run Forward", true);
-        }
-        // No Movement Input -> Idle
-        else
-        {
-            anim.SetBool("Run Forward", false);
-        }
-        
-        
-       
+        Move();
     }
 }
