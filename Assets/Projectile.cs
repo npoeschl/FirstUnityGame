@@ -9,12 +9,13 @@ public class Projectile : MonoBehaviour
     public float velocity;
     public Rigidbody rb;
     public GameObject impactParticles;
+    public Vector3 direction;
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         //make projectile move
-        Vector3 projectileForce = GameObject.FindWithTag("Player").transform.forward * velocity;
-
+        Vector3 projectileForce = transform.forward * velocity;
         rb.AddForce(projectileForce, ForceMode.Impulse);
     }
 

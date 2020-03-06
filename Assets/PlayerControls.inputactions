@@ -45,7 +45,7 @@
                 {
                     "name": "",
                     "id": "14a2e4a9-e581-4cb3-a2ac-404c7438562a",
-                    "path": "<Keyboard>/space",
+                    "path": "<Gamepad>/buttonSouth",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -56,7 +56,7 @@
                 {
                     "name": "",
                     "id": "2fab93cc-9776-4f94-9e52-ac836f8632fe",
-                    "path": "<Keyboard>/leftCtrl",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

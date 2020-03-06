@@ -7,6 +7,8 @@ public class Player : MonoBehaviour
     public GameObject ShootingPoint;
     public GameObject Healthbar;
     public Animator anim;
+    public UnityEngine.InputSystem.InputActionAsset inputAction;
+    public UnityEngine.InputSystem.InputActionMap actionMap;
     [SerializeField] private CharacterController characterController;
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpSpeed;
@@ -19,6 +21,11 @@ public class Player : MonoBehaviour
     float currentHealth;
     Vector2 movementInput;
 
+    void Awake()
+    {
+        
+        
+    } 
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +52,7 @@ public class Player : MonoBehaviour
     void Move()
     {
         // Store input values
-        Vector3 movement = new Vector3(movementInput.x, 0.0f, movementInput.y);
+        Vector3 movement = new Vector3(movementInput.y, 0.0f, -movementInput.x);
 
         // Calculate downward speed with gravity
         vSpeed -= gravity * Time.deltaTime;
@@ -58,7 +65,7 @@ public class Player : MonoBehaviour
         // Rotate character only if input is given and set walking animation
         if (movement.x != 0 || movement.z != 0)
         {
-            transform.rotation = Quaternion.LookRotation(new Vector3(movementInput.x, 0.0f, -movementInput.y));
+            transform.rotation = Quaternion.LookRotation(new Vector3(movementInput.y, 0.0f, -movementInput.x));
             anim.SetBool("Run Forward", true);
         }
         // No Movement Input -> Idle
@@ -102,7 +109,8 @@ public class Player : MonoBehaviour
     void Shoot()
     {
         anim.SetTrigger("Attack 01");
-        Instantiate(ProjectilePrefab, ShootingPoint.transform.position, Quaternion.identity);
+        GameObject bullet = Instantiate(ProjectilePrefab, ShootingPoint.transform.position, Quaternion.LookRotation(transform.forward));
+       
         nextFire = Time.time + 1 / fireRate;
         TakeDamage(10);
     }

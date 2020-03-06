@@ -106,11 +106,20 @@ MonoBehaviour:
   ProjectilePrefab: {fileID: 7144281642588029900, guid: 503a7d0b4773fcf4cbcc45565f8869ff,
     type: 3}
   ShootingPoint: {fileID: 4307406265614084402}
+  Healthbar: {fileID: 0}
+  anim: {fileID: 0}
+  inputAction: {fileID: 0}
+  actionMap:
+    m_Name: 
+    m_Id: a6ba8b0f-244f-4042-852f-4700e8a3e57d
+    m_Asset: {fileID: 0}
+    m_Actions: []
+    m_Bindings: []
   characterController: {fileID: 4307406265728010490}
   moveSpeed: 10
   jumpSpeed: 9
   fireRate: 2
-  nextFire: 0
+  maxhealth: 100
 --- !u!95 &2967164950571857181
 Animator:
   serializedVersion: 3

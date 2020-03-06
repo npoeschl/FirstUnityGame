@@ -1067,7 +1067,7 @@ GameObject:
   - component: {fileID: 872636020444286041}
   m_Layer: 0
   m_Name: Player_Devil
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1137,11 +1137,18 @@ MonoBehaviour:
   ShootingPoint: {fileID: 5409892527836877397}
   Healthbar: {fileID: 4043339254644134018}
   anim: {fileID: 95206688057043068}
+  inputAction: {fileID: -944628639613478452, guid: e8c274fe8ba16cb409bb7b3563626433,
+    type: 3}
+  actionMap:
+    m_Name: Action Map
+    m_Id: f827ccd3-6450-45d4-93ff-aad35ac58a44
+    m_Asset: {fileID: 0}
+    m_Actions: []
+    m_Bindings: []
   characterController: {fileID: 4469144311166763517}
   moveSpeed: 10
   jumpSpeed: 4
   fireRate: 2
-  nextFire: 0
   maxhealth: 100
 --- !u!143 &4469144311166763517
 CharacterController:
