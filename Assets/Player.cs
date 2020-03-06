@@ -52,7 +52,8 @@ public class Player : MonoBehaviour
     void Move()
     {
         // Store input values
-        Vector3 movement = new Vector3(movementInput.y, 0.0f, -movementInput.x);
+        //Vector3 movement = new Vector3(movementInput.y, 0.0f, -movementInput.x);
+        Vector3 movement = new Vector3(0.0f, 0.0f, -movementInput.x);
 
         // Calculate downward speed with gravity
         vSpeed -= gravity * Time.deltaTime;
@@ -65,7 +66,8 @@ public class Player : MonoBehaviour
         // Rotate character only if input is given and set walking animation
         if (movement.x != 0 || movement.z != 0)
         {
-            transform.rotation = Quaternion.LookRotation(new Vector3(movementInput.y, 0.0f, -movementInput.x));
+            //transform.rotation = Quaternion.LookRotation(new Vector3(movementInput.y, 0.0f, -movementInput.x));
+            transform.rotation = Quaternion.LookRotation(new Vector3(0.0f, 0.0f, -movementInput.x));
             anim.SetBool("Run Forward", true);
         }
         // No Movement Input -> Idle
