@@ -20,6 +20,9 @@ public class Player : MonoBehaviour
     public float maxhealth = 100f;
     float currentHealth;
     Vector2 movementInput;
+    Gradient gradient;
+    GradientColorKey[] colorKey;
+    GradientAlphaKey[] alphaKey;
 
     void Awake()
     {
@@ -32,6 +35,27 @@ public class Player : MonoBehaviour
     {
         anim.SetBool("Run Forward", false);
         currentHealth = maxhealth;
+
+        gradient = new Gradient();
+        // Populate the color keys at the relative time 0 and 1 (0 and 100%)
+        colorKey = new GradientColorKey[3];
+        colorKey[0].color = Color.red;
+        colorKey[0].time = 0.0f;
+        colorKey[1].color = Color.yellow;
+        colorKey[1].time = 0.5f;
+        colorKey[2].color = Color.green;
+        colorKey[2].time = 1.0f;
+
+        // Populate the alpha  keys at relative time 0 and 1  (0 and 100%)
+        alphaKey = new GradientAlphaKey[3];
+        alphaKey[0].alpha = 1.0f;
+        alphaKey[0].time = 0.0f;
+        alphaKey[1].alpha = 1.0f;
+        alphaKey[1].time = 0.5f;
+        alphaKey[2].alpha = 1.0f;
+        alphaKey[2].time = 1.0f;
+
+        gradient.SetKeys(colorKey, alphaKey);
     }
 
     void OnMove(InputValue value)
@@ -77,25 +101,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    void TakeDamage(float dmg)
+    public void TakeDamage(float dmg)
     {
         if (currentHealth > 0)
         {
-            currentHealth -= dmg;
-            Healthbar.transform.localScale = new Vector3(currentHealth / maxhealth, 1, 1);
-            Healthbar.transform.localPosition += new Vector3(-(dmg / maxhealth) / 2, 0, 0);
-            if (currentHealth < 70)
-            {
-                Healthbar.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.yellow);
-            }
-            if (currentHealth < 50)
-            {
-                Healthbar.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.magenta);
-            }
-            if (currentHealth < 30)
-            {
-                Healthbar.GetComponentInChildren<Renderer>().material.SetColor("_Color", Color.red);
-            }
+            currentHealth = Mathf.Clamp(currentHealth-dmg, 0, maxhealth);
+            // currentHealth -= dmg;
+            UpdateHealthBar(dmg);
+          
         }
         else
         {
@@ -110,11 +123,13 @@ public class Player : MonoBehaviour
 
     void Shoot()
     {
-        anim.SetTrigger("Attack 01");
-        GameObject bullet = Instantiate(ProjectilePrefab, ShootingPoint.transform.position, Quaternion.LookRotation(transform.forward));
-       
-        nextFire = Time.time + 1 / fireRate;
-        TakeDamage(10);
+        if (Time.time >= nextFire)
+        {
+            anim.SetTrigger("Attack 01");
+            GameObject bullet = Instantiate(ProjectilePrefab, ShootingPoint.transform.position, Quaternion.LookRotation(transform.forward));
+            nextFire = Time.time + 1 / fireRate;
+        }
+        
     }
 
     void Jump()
@@ -140,6 +155,13 @@ public class Player : MonoBehaviour
             }
         }
 
+    }
+
+    void UpdateHealthBar(float dmg)
+    {
+        Healthbar.transform.localScale = new Vector3(currentHealth / maxhealth, 1, 1);
+        Healthbar.transform.localPosition += new Vector3(-(dmg / maxhealth) / 2, 0, 0);
+        Healthbar.GetComponentInChildren<Renderer>().material.SetColor("_Color", gradient.Evaluate(currentHealth/maxhealth));
     }
 
     // Update is called once per frame

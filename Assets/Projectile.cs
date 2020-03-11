@@ -9,7 +9,6 @@ public class Projectile : MonoBehaviour
     public float velocity;
     public Rigidbody rb;
     public GameObject impactParticles;
-    public Vector3 direction;
 
     // Start is called before the first frame update
     void Awake()
@@ -29,6 +28,12 @@ public class Projectile : MonoBehaviour
     {
         Debug.Log(collision.collider);
         Instantiate(impactParticles, collision.contacts[0].point, Quaternion.LookRotation(collision.contacts[0].normal, Vector3.up));
+        // Damage Players
+        Player hitPlayer = collision.gameObject.GetComponent<Player>();
+        if(hitPlayer != null)
+        {
+            hitPlayer.TakeDamage(damage);
+        }
         Destroy(gameObject);
     }
 }
